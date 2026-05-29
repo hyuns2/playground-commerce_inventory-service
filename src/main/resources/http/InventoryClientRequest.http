@@ -1,0 +1,43 @@
+### 보여주기용 조회 API
+GET http://localhost:8082/inventory/client/stock-infos?productId=1
+Content-Type: application/json
+
+### 재고 예약 API
+POST http://localhost:8082/inventory/client/reserve?orderExternalId=order-123
+Content-Type: application/json
+
+[
+  {
+    "variantId": 1,
+    "quantity": 10
+  },
+  {
+    "variantId": 3,
+    "quantity": 20
+  }
+]
+
+### 재고 확정 API
+POST http://localhost:8082/inventory/client/confirm?orderExternalId=order-123
+Content-Type: application/json
+
+### 재고 예약해제 API
+POST http://localhost:8082/inventory/client/release?orderExternalId=order-123
+Content-Type: application/json
+
+### 재고 복구 API
+POST http://localhost:8082/inventory/client/restore?orderExternalId=order-123
+Content-Type: application/json
+
+### 재고 부분복구 API
+POST http://localhost:8082/inventory/client/partial-restore?idempotencyKey=order-123-idem&orderExternalId=order-123
+Content-Type: application/json
+
+{
+  "1": 9,
+  "3": 10
+}
+
+### 재고 예약해제 or 전체복구 API
+POST http://localhost:8082/inventory/client/restock?orderExternalId=order-123
+Content-Type: application/json

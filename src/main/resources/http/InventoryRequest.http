@@ -1,0 +1,7 @@
+### 상품 id로 모든 옵션 재고 검색 API
+GET http://localhost:8082/inventory/variants?productId=1
+Content-Type: application/json
+
+### 옵션 id로 재고 조회 API
+GET http://localhost:8082/inventory/variant?variantId=1
+Content-Type: application/json
