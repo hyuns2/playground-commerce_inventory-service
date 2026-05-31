@@ -21,8 +21,8 @@ public class InventoryClientController {
     private final StockService stockService;
     private final ReservationService reservationService;
 
-    @GetMapping("/stock-infos")
-    public ResponseEntity<Map<Long, Integer>> getStockInfos(@RequestParam Long productId) {
+    @GetMapping("/stocks-info")
+    public ResponseEntity<Map<Long, Integer>> getStocksInfo(@RequestParam Long productId) {
         return ResponseEntity.ok().body(
                 stockService.getStocks(productId).stream()
                         .collect(
