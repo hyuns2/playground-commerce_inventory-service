@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "stocks",
-        indexes = {
-                @Index(name = "idx_productId", columnList = "productId")
-        }
+@Table(name = "stocks"
+//        indexes = {
+//                @Index(name = "idx_productId", columnList = "productId")
+//        }
 )
 public class StockEntity {
     @Id

@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/inventory/client")
+@RequestMapping("/client")
 @RequiredArgsConstructor
 public class InventoryClientController {
     private final StockService stockService;
