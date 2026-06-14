@@ -2,7 +2,6 @@ package io.playground.inventoryservice.infrastructure.persistence.stock;
 
 import io.playground.inventoryservice.application.dto.InventoryDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -15,13 +14,13 @@ import java.util.List;
 public class StockJdbcTemplate {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public int[] updateQuantitiesForReserve(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos) {
+    public int[] updateQuantitiesForReserve(List<InventoryDto.RequestInfo> requestInfos) {
         return jdbcTemplate.batchUpdate(
                 "UPDATE stocks SET " +
                         "reserved_quantity = reserved_quantity + :quantity " +
                     "WHERE variant_id = :variantId AND " +
                         "(total_quantity - reserved_quantity) >= :quantity",
-                reservationRequestInfos.stream()
+                requestInfos.stream()
                         .map(info -> new MapSqlParameterSource()
                                 .addValue("variantId", info.variantId())
                                 .addValue("quantity", info.quantity()))
@@ -29,7 +28,7 @@ public class StockJdbcTemplate {
         );
     }
 
-    public int[] updateQuantitiesForConfirm(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos) {
+    public int[] updateQuantitiesForConfirm(List<InventoryDto.RequestInfo> requestInfos) {
         return jdbcTemplate.batchUpdate(
                 "UPDATE stocks SET " +
                         "total_quantity = total_quantity - :quantity, " +
@@ -37,7 +36,7 @@ public class StockJdbcTemplate {
                     "WHERE variant_id = :variantId AND " +
                         "total_quantity >= :quantity AND " +
                         "reserved_quantity >= :quantity",
-                reservationRequestInfos.stream()
+                requestInfos.stream()
                         .map(info -> new MapSqlParameterSource()
                                 .addValue("variantId", info.variantId())
                                 .addValue("quantity", info.quantity()))
@@ -45,13 +44,13 @@ public class StockJdbcTemplate {
         );
     }
 
-    public int[] updateQuantitiesForRelease(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos) {
+    public int[] updateQuantitiesForRelease(List<InventoryDto.RequestInfo> requestInfos) {
         return jdbcTemplate.batchUpdate(
                 "UPDATE stocks SET " +
                         "reserved_quantity = reserved_quantity - :quantity " +
                     "WHERE variant_id = :variantId AND " +
                         "reserved_quantity >= :quantity",
-                reservationRequestInfos.stream()
+                requestInfos.stream()
                         .map(info -> new MapSqlParameterSource()
                                 .addValue("variantId", info.variantId())
                                 .addValue("quantity", info.quantity()))
@@ -59,12 +58,12 @@ public class StockJdbcTemplate {
         );
     }
 
-    public int[] updateQuantitiesForRestore(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos) {
+    public int[] updateQuantitiesForRestore(List<InventoryDto.RequestInfo> requestInfos) {
         return jdbcTemplate.batchUpdate(
                 "UPDATE stocks SET " +
                         "total_quantity = total_quantity + :quantity " +
                     "WHERE variant_id = :variantId",
-                reservationRequestInfos.stream()
+                requestInfos.stream()
                         .map(info -> new MapSqlParameterSource()
                                 .addValue("variantId", info.variantId())
                                 .addValue("quantity", info.quantity()))

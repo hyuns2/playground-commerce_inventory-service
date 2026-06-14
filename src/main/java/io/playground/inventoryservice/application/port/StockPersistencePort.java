@@ -1,6 +1,6 @@
-package io.playground.inventoryservice.application.inventory.port;
+package io.playground.inventoryservice.application.port;
 
-import io.playground.inventoryservice.application.inventory.dto.InventoryDto;
+import io.playground.inventoryservice.application.dto.InventoryDto;
 import io.playground.inventoryservice.domain.Stock;
 
 import java.util.List;
@@ -13,11 +13,11 @@ public interface StockPersistencePort {
 
     List<Stock> findAllByVariantIds(List<Long> variantIds);
 
-    int[] updateQuantitiesForReserve(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos);
+    int[] updateQuantitiesForReserve(List<InventoryDto.RequestInfo> requestInfos);
 
-    boolean updateQuantitiesForConfirm(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos);
+    boolean updateQuantitiesForConfirm(List<InventoryDto.RequestInfo> requestInfos);
 
-    boolean updateQuantitiesForRelease(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos);
+    boolean updateQuantitiesForRelease(List<InventoryDto.RequestInfo> requestInfos);
 
-    boolean updateQuantitiesForRestore(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos);
+    boolean updateQuantitiesForRestore(List<InventoryDto.RequestInfo> requestInfos);
 }

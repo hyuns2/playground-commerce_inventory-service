@@ -1,7 +1,5 @@
 package io.playground.inventoryservice.infrastructure.kafka.consumer;
 
-import io.playground.inventoryservice.exception.BusinessErrorCode;
-import io.playground.inventoryservice.exception.BusinessException;
 import io.playground.inventoryservice.infrastructure.kafka.model.EventEnvelope;
 import io.playground.inventoryservice.infrastructure.persistence.eventstream.InboxEntity;
 import io.playground.inventoryservice.infrastructure.persistence.eventstream.InboxJpaRepository;
@@ -44,9 +42,8 @@ public class KafkaConsumer {
                     envelope.getEventType()
             );
         } catch (IllegalArgumentException e) {
-            throw new BusinessException(
-                    BusinessErrorCode.UNKNOWN_EVENT_TYPE
-            );
+            acknowledgment.acknowledge();
+            return;
         }
 
         InboxEntity event = InboxEntity.from(

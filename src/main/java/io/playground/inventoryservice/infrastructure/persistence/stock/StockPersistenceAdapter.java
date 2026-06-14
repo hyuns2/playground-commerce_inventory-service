@@ -1,7 +1,7 @@
 package io.playground.inventoryservice.infrastructure.persistence.stock;
 
 import io.playground.inventoryservice.application.dto.InventoryDto;
-import io.playground.inventoryservice.application.port.persistence.StockPersistencePort;
+import io.playground.inventoryservice.application.port.StockPersistencePort;
 import io.playground.inventoryservice.domain.Stock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -40,35 +40,35 @@ public class StockPersistenceAdapter implements StockPersistencePort {
     }
 
     @Override
-    public int[] updateQuantitiesForReserve(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos) {
+    public int[] updateQuantitiesForReserve(List<InventoryDto.RequestInfo> requestInfos) {
         return stockTemplate.updateQuantitiesForReserve(
-                reservationRequestInfos
+                requestInfos
         );
     }
 
     @Override
-    public boolean updateQuantitiesForConfirm(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos) {
+    public boolean updateQuantitiesForConfirm(List<InventoryDto.RequestInfo> requestInfos) {
         return Arrays.stream(
                 stockTemplate.updateQuantitiesForConfirm(
-                        reservationRequestInfos
+                        requestInfos
                 )
         ).allMatch(v -> v > 0);
     }
 
     @Override
-    public boolean updateQuantitiesForRelease(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos) {
+    public boolean updateQuantitiesForRelease(List<InventoryDto.RequestInfo> requestInfos) {
         return Arrays.stream(
                 stockTemplate.updateQuantitiesForRelease(
-                        reservationRequestInfos
+                        requestInfos
                 )
         ).allMatch(v -> v > 0);
     }
 
     @Override
-    public boolean updateQuantitiesForRestore(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos) {
+    public boolean updateQuantitiesForRestore(List<InventoryDto.RequestInfo> requestInfos) {
         return Arrays.stream(
                 stockTemplate.updateQuantitiesForRestore(
-                        reservationRequestInfos
+                        requestInfos
                 )
         ).allMatch(v -> v > 0);
     }

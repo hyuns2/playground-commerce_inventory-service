@@ -1,5 +1,6 @@
 package io.playground.inventoryservice.infrastructure.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +42,15 @@ public class JsonUtil {
                     BusinessErrorCode.JSON_PROCESSING_FAILED
             );
         }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class ErrorBody {
+        private String detail;
+
+        public ErrorBody() {}
+        public String getDetail() { return detail; }
+        public void setDetail(String detail) { this.detail = detail; }
     }
 
     public boolean isBusinessError(String json) {

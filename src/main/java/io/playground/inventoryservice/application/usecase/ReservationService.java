@@ -1,8 +1,8 @@
-package io.playground.inventoryservice.application.inventory.usecase;
+package io.playground.inventoryservice.application.usecase;
 
-import io.playground.inventoryservice.application.inventory.dto.InventoryDto;
-import io.playground.inventoryservice.application.inventory.port.ReservationPersistencePort;
-import io.playground.inventoryservice.application.inventory.port.StockPersistencePort;
+import io.playground.inventoryservice.application.dto.InventoryDto;
+import io.playground.inventoryservice.application.port.ReservationPersistencePort;
+import io.playground.inventoryservice.application.port.StockPersistencePort;
 import io.playground.inventoryservice.domain.Reservation;
 import io.playground.inventoryservice.domain.Stock;
 import io.playground.inventoryservice.exception.BusinessDetailException;
@@ -29,19 +29,19 @@ public class ReservationService {
      * 재고 다건 예약
      *
      * @param orderExternalId 주문번호
-     * @param reservationRequestInfos {옵션 ID, 예약 수량} 리스트
+     * @param requestInfos {옵션 ID, 예약 수량} 리스트
      */
     @Transactional
     public void reserveStocks(String orderExternalId,
-                              List<InventoryDto.ReservationRequestInfo> reservationRequestInfos) {
+                              List<InventoryDto.RequestInfo> requestInfos) {
         if (reservationPersistence.existsByOrderExternalId(orderExternalId))
             return;
 
         // 옵션 ID -> 재고 맵핑
         Map<Long, Stock> stockByVariantId = stockPersistence
                 .findAllByVariantIds(
-                        reservationRequestInfos.stream()
-                                .map(InventoryDto.ReservationRequestInfo::variantId)
+                        requestInfos.stream()
+                                .map(InventoryDto.RequestInfo::variantId)
                                 .toList()
                 ).stream()
                 .collect(Collectors.toMap(
@@ -51,16 +51,16 @@ public class ReservationService {
 
         // 재고 예약 시도
         int[] updatedResult = stockPersistence
-                .updateQuantitiesForReserve(reservationRequestInfos);
+                .updateQuantitiesForReserve(requestInfos);
 
         // 예약 실패한 옵션이 있다면, 옵션 ID와 가능 수량을 맵핑하여 예외 반환
         Map<Long, Integer> unavailable = new HashMap<>();
         for (int i = 0; i < updatedResult.length; i++)
             if (updatedResult[i] < 1)
                 unavailable.put(
-                        reservationRequestInfos.get(i).variantId(),
+                        requestInfos.get(i).variantId(),
                         stockByVariantId.get(
-                                reservationRequestInfos.get(i).variantId()
+                                requestInfos.get(i).variantId()
                         ).getAvailableQuantity()
                 );
 
@@ -72,7 +72,7 @@ public class ReservationService {
 
         // 모두 예약 가능한 경우, 예약 정보 저장
         if (reservationPersistence.saveAll(
-                reservationRequestInfos.stream()
+                requestInfos.stream()
                         .map(req -> Reservation.of(
                                 null,
                                 stockByVariantId.get(req.variantId()).getId(),
@@ -111,12 +111,12 @@ public class ReservationService {
                 !stockPersistence.updateQuantitiesForConfirm(
                         reservations.stream()
                                 .map(r ->
-                                        InventoryDto.ReservationRequestInfo.builder()
+                                        InventoryDto.RequestInfo.builder()
                                                 .variantId(r.getVariantId())
                                                 .quantity(r.getQuantity())
                                                 .build()
                                 )
-                                .sorted(Comparator.comparing(InventoryDto.ReservationRequestInfo::variantId))
+                                .sorted(Comparator.comparing(InventoryDto.RequestInfo::variantId))
                                 .toList()
                 ) ||
                 !reservationPersistence.updateStatusByIds(
@@ -156,11 +156,11 @@ public class ReservationService {
                 !stockPersistence.updateQuantitiesForRelease(
                         reservations.stream()
                                 .map(r ->
-                                        InventoryDto.ReservationRequestInfo.builder()
+                                        InventoryDto.RequestInfo.builder()
                                                 .variantId(r.getVariantId())
                                                 .quantity(r.getQuantity())
                                                 .build()
-                                ).sorted(Comparator.comparing(InventoryDto.ReservationRequestInfo::variantId))
+                                ).sorted(Comparator.comparing(InventoryDto.RequestInfo::variantId))
                                 .toList()
                 ) ||
                 !reservationPersistence.updateStatusByIds(
@@ -200,11 +200,11 @@ public class ReservationService {
                 !stockPersistence.updateQuantitiesForRestore(
                         reservations.stream()
                                 .map(r ->
-                                        InventoryDto.ReservationRequestInfo.builder()
+                                        InventoryDto.RequestInfo.builder()
                                                 .variantId(r.getVariantId())
                                                 .quantity(r.getQuantity())
                                                 .build()
-                                ).sorted(Comparator.comparing(InventoryDto.ReservationRequestInfo::variantId))
+                                ).sorted(Comparator.comparing(InventoryDto.RequestInfo::variantId))
                                 .toList()
                 ) ||
                 !reservationPersistence.updateRestoredQuantityAndStatusByIds(
@@ -235,6 +235,19 @@ public class ReservationService {
     public void restorePartialStocks(String idempotencyKey,
                                      String orderExternalId,
                                      Map<Long, Integer> variantQuantities) {
+        variantQuantities.entrySet().stream()
+                .filter(entry ->
+                        entry.getKey() == null ||
+                        entry.getValue() == null ||
+                                entry.getValue() < 1
+                ).findAny()
+                .ifPresent(entry -> {
+                    throw new BusinessDetailException(
+                            BusinessErrorCode.RESERVATION_PARTIAL_RESTORE_FAILED,
+                            "INVALID_VARIANT_QUANTITY"
+                    );
+                });
+
         // 확정 또는 부분복구 상태인 정보만 처리
         List<Reservation> reservations = reservationPersistence
                 .findAllByOrderExternalIdAndVariantIdsAndStatuses(
@@ -254,24 +267,22 @@ public class ReservationService {
                 !stockPersistence.updateQuantitiesForRestore(
                         reservations.stream()
                                 .map(r ->
-                                        InventoryDto.ReservationRequestInfo.builder()
+                                        InventoryDto.RequestInfo.builder()
                                                 .variantId(r.getVariantId())
                                                 .quantity(variantQuantities.get(r.getVariantId()))
                                                 .build()
-                                ).sorted(Comparator.comparing(InventoryDto.ReservationRequestInfo::variantId))
+                                ).sorted(Comparator.comparing(InventoryDto.RequestInfo::variantId))
                                 .toList()
                 ) ||
                 !reservationPersistence.updateRestoredQuantityAndStatusByIds(
                         true,
                         reservations.stream()
-                                .collect(
-                                        Collectors.toMap(
-                                                Reservation::getId,
-                                                r -> variantQuantities.get(
-                                                        r.getVariantId()
-                                                )
+                                .collect(Collectors.toMap(
+                                        Reservation::getId,
+                                        r -> variantQuantities.get(
+                                                r.getVariantId()
                                         )
-                                )
+                                ))
                 )
         )
             throw new BusinessDetailException(

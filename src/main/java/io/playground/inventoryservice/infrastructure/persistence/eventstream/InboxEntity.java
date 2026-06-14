@@ -43,9 +43,11 @@ public class InboxEntity {
     @Column(nullable = false)
     private boolean processed;
 
-    public void setProcessed(boolean processed) {
-        this.processed = processed;
-    }
+    @Column(nullable = false)
+    private int retryCount;
+
+    @Column
+    private Instant lockedUntil;
 
     public static InboxEntity from(EventEnvelope eventEnvelope) {
         return InboxEntity.builder()
@@ -55,6 +57,12 @@ public class InboxEntity {
                 .traceId(eventEnvelope.getTraceId())
                 .payload(eventEnvelope.getPayload())
                 .processed(false)
+                .retryCount(0)
+                .lockedUntil(null)
                 .build();
+    }
+
+    public void updateLockedUntil(Instant lockedUntil) {
+        this.lockedUntil = lockedUntil;
     }
 }

@@ -20,5 +20,5 @@ public interface StockJpaRepository extends JpaRepository<StockEntity, Long> {
             "set s.reservedQuantity = s.reservedQuantity + :quantity " +
             "where s.variantId = :variantId and " +
             "(s.totalQuantity - s.reservedQuantity) >= :quantity")
-    int updateQuantitiesForReserve(List<InventoryDto.ReservationRequestInfo> reservationRequestInfos);
+    int updateQuantitiesForReserve(List<InventoryDto.RequestInfo> requestInfos);
 }

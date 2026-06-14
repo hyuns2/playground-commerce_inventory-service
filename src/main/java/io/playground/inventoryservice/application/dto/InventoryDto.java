@@ -1,11 +1,14 @@
-package io.playground.inventoryservice.application.inventory.dto;
+package io.playground.inventoryservice.application.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 public class InventoryDto {
     @Builder
-    public record ReservationRequestInfo(
+    public record RequestInfo(
+            @NotNull
             Long variantId,
+            @NotNull
             Integer quantity
     ) {
     }

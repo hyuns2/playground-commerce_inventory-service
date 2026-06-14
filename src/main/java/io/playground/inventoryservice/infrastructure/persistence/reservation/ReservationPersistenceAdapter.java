@@ -1,6 +1,6 @@
 package io.playground.inventoryservice.infrastructure.persistence.reservation;
 
-import io.playground.inventoryservice.application.port.persistence.ReservationPersistencePort;
+import io.playground.inventoryservice.application.port.ReservationPersistencePort;
 import io.playground.inventoryservice.domain.Reservation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

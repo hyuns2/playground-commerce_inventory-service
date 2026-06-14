@@ -18,8 +18,7 @@ public enum BusinessErrorCode {
     STOCK_NOT_FOUND("INVENTORY-404:001", "해당하는 상품 옵션의 재고를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
     // 500
-    JSON_PROCESSING_FAILED("INVENTORY-500:001", "JSON 직렬화 처리에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-    UNKNOWN_EVENT_TYPE("INVENTORY-500:002", "알 수 없는 이벤트 타입입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+    JSON_PROCESSING_FAILED("INVENTORY-500:001", "JSON 직렬화 처리에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String code;
     private final String message;

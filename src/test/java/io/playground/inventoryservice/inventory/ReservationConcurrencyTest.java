@@ -41,7 +41,7 @@ public class ReservationConcurrencyTest extends BaseIntegrationTest {
                         () -> reservationService.reserveStocks(
                                 UUID.randomUUID().toString(),
                                 List.of(
-                                        InventoryDto.ReservationRequestInfo.builder()
+                                        InventoryDto.RequestInfo.builder()
                                                 .variantId(stock.getVariantId())
                                                 .quantity(1)
                                                 .build()

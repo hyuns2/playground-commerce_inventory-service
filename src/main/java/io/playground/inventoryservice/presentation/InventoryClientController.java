@@ -1,10 +1,10 @@
 package io.playground.inventoryservice.presentation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.playground.inventoryservice.application.dto.InventoryDto;
 import io.playground.inventoryservice.application.usecase.ReservationService;
 import io.playground.inventoryservice.application.usecase.StockService;
 import io.playground.inventoryservice.domain.Stock;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +36,10 @@ public class InventoryClientController {
 
     @PostMapping("/reserve")
     public ResponseEntity<Void> reserveStocks(@RequestParam String orderExternalId,
-                                              @NotNull @RequestBody List<InventoryDto.ReservationRequestInfo> reservationRequestInfos) throws JsonProcessingException {
+                                              @Valid @NotNull @RequestBody List<InventoryDto.RequestInfo> requestInfos) {
         reservationService.reserveStocks(
                 orderExternalId,
-                reservationRequestInfos
+                requestInfos
         );
 
         return ResponseEntity.ok().build();
@@ -60,8 +60,7 @@ public class InventoryClientController {
     }
 
     @PostMapping("/restore")
-    public ResponseEntity<Void> restoreStocks(@RequestParam String orderExternalId,
-                                                 @RequestBody(required = false) List<Long> variantIds) {
+    public ResponseEntity<Void> restoreStocks(@RequestParam String orderExternalId) {
         reservationService.restoreAllStocks(
                 orderExternalId
         );

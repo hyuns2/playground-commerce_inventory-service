@@ -16,13 +16,13 @@ public class EventEnvelope {
     private String traceId;
     private String payload;
 
-    public static EventEnvelope of(Long eventId,
+    public static EventEnvelope of(String eventId,
                                    String eventType,
                                    Instant occurredAt,
                                    String traceId,
                                    String payload) {
         return new EventEnvelope(
-                eventId.toString(),
+                eventId,
                 eventType,
                 occurredAt.toString(),
                 traceId,

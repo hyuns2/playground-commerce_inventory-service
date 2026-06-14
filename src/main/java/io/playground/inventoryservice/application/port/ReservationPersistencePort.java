@@ -1,4 +1,4 @@
-package io.playground.inventoryservice.application.inventory.port;
+package io.playground.inventoryservice.application.port;
 
 import io.playground.inventoryservice.domain.Reservation;
 

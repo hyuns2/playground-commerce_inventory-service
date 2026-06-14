@@ -78,11 +78,11 @@ logging:
     root: INFO
     io.playground: DEBUG
 
-    org.springframework.jdbc.core: DEBUG
-    org.springframework.jdbc.core.StatementCreatorUtils: TRACE
-
-    org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE
+#    org.springframework.jdbc.core: DEBUG
+#    org.springframework.jdbc.core.StatementCreatorUtils: TRACE
+#
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE
 
     org.apache.kafka: WARN
     org.springframework.kafka: WARN
