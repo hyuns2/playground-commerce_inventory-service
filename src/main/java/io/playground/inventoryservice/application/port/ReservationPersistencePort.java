@@ -1,4 +1,4 @@
-package io.playground.inventoryservice.application.port.persistence;
+package io.playground.inventoryservice.application.inventory.port;
 
 import io.playground.inventoryservice.domain.Reservation;
 

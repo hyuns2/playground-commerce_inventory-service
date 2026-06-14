@@ -1,6 +1,6 @@
-package io.playground.inventoryservice.application.port.persistence;
+package io.playground.inventoryservice.application.inventory.port;
 
-import io.playground.inventoryservice.application.dto.InventoryDto;
+import io.playground.inventoryservice.application.inventory.dto.InventoryDto;
 import io.playground.inventoryservice.domain.Stock;
 
 import java.util.List;

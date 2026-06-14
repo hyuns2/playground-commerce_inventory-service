@@ -1,4 +1,4 @@
-package io.playground.inventoryservice.application.dto;
+package io.playground.inventoryservice.application.inventory.dto;
 
 import lombok.Builder;
 

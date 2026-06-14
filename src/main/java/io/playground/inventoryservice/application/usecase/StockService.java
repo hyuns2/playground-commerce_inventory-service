@@ -1,6 +1,6 @@
-package io.playground.inventoryservice.application.usecase;
+package io.playground.inventoryservice.application.inventory.usecase;
 
-import io.playground.inventoryservice.application.port.persistence.StockPersistencePort;
+import io.playground.inventoryservice.application.inventory.port.StockPersistencePort;
 import io.playground.inventoryservice.domain.Stock;
 import io.playground.inventoryservice.exception.BusinessErrorCode;
 import io.playground.inventoryservice.exception.BusinessException;
