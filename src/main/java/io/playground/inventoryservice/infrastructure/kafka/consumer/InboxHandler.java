@@ -83,8 +83,8 @@ public class InboxHandler {
     public void handle(InboxEntity entity) {
         switch (entity.getEventType()) {
             case ORDER_EXPIRED -> handleOrderExpired(entity);
-            case CANCEL_ALL -> handleCancelAll(entity);
-            case CANCEL_PARTIALLY -> handleCancelPartially(entity);
+            case ALL_CANCELED -> handleCancelAll(entity);
+            case PARTIALLY_CANCELED -> handleCancelPartially(entity);
         }
     }
 

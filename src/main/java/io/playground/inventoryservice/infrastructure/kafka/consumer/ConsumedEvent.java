@@ -6,8 +6,8 @@ import java.util.Map;
 public class ConsumedEvent {
     public enum EventType {
         ORDER_EXPIRED,
-        CANCEL_ALL,
-        CANCEL_PARTIALLY
+        ALL_CANCELED,
+        PARTIALLY_CANCELED
     }
 
     public record OrderExpired(

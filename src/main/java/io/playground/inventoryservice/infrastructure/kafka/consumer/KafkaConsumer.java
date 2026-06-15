@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class KafkaConsumer {
-    private final InboxJpaRepository consumedEventRepository;
+    private final InboxJpaRepository inboxRepository;
     private final JsonUtil jsonUtil;
 
     @RetryableTopic(
@@ -51,7 +51,7 @@ public class KafkaConsumer {
         );
 
         try {
-            consumedEventRepository.save(
+            inboxRepository.save(
                     event
             );
         } catch (DataIntegrityViolationException e) {
