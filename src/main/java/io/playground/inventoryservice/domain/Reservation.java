@@ -16,9 +16,11 @@ public class Reservation {
 
     private int quantity;
 
+    private ReservationStatus status;
+
     private int restoredQuantity;
 
-    private ReservationStatus status;
+    private String lastIdempotencyKey;
 
     public enum ReservationStatus {
         RESERVED, CONFIRMED, RELEASED,
@@ -30,8 +32,9 @@ public class Reservation {
                                  String orderExternalId,
                                  Long variantId,
                                  int quantity,
+                                 ReservationStatus status,
                                  int restoredQuantity,
-                                 ReservationStatus status) {
-        return new Reservation(id, stockId, orderExternalId, variantId, quantity, restoredQuantity, status);
+                                 String lastIdempotencyKey) {
+        return new Reservation(id, stockId, orderExternalId, variantId, quantity, status, restoredQuantity, lastIdempotencyKey);
     }
 }

@@ -38,12 +38,15 @@ public class ReservationEntity {
     @Column(nullable = false)
     private int quantity;
 
-    @Column(nullable = false)
-    private int restoredQuantity;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Reservation.ReservationStatus status;
+
+    @Column(nullable = false)
+    private int restoredQuantity;
+
+    @Column
+    private String lastIdempotencyKey;
 
     public static ReservationEntity fromDomain(Reservation reservation,
                                                StockEntity stockEntity) {
@@ -52,8 +55,9 @@ public class ReservationEntity {
                 .orderExternalId(reservation.getOrderExternalId())
                 .variantId(reservation.getVariantId())
                 .quantity(reservation.getQuantity())
-                .restoredQuantity(reservation.getRestoredQuantity())
                 .status(reservation.getStatus())
+                .restoredQuantity(reservation.getRestoredQuantity())
+                .lastIdempotencyKey(reservation.getLastIdempotencyKey())
                 .build();
     }
 
@@ -64,8 +68,9 @@ public class ReservationEntity {
                 this.orderExternalId,
                 this.variantId,
                 this.quantity,
+                this.status,
                 this.restoredQuantity,
-                this.status
+                this.lastIdempotencyKey
         );
     }
 }

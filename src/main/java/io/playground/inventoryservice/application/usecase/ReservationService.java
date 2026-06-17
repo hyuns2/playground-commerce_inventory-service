@@ -79,8 +79,9 @@ public class ReservationService {
                                 orderExternalId,
                                 req.variantId(),
                                 req.quantity(),
+                                Reservation.ReservationStatus.RESERVED,
                                 0,
-                                Reservation.ReservationStatus.RESERVED
+                                null
                         )).toList()
         ).contains(0))
             throw new BusinessDetailException(
@@ -207,8 +208,7 @@ public class ReservationService {
                                 ).sorted(Comparator.comparing(InventoryDto.RequestInfo::variantId))
                                 .toList()
                 ) ||
-                !reservationPersistence.updateRestoredQuantityAndStatusByIds(
-                        false,
+                !reservationPersistence.updateForAllRestoration(
                         reservations.stream()
                                 .collect(
                                         Collectors.toMap(
@@ -248,7 +248,7 @@ public class ReservationService {
                     );
                 });
 
-        // 확정 또는 부분복구 상태인 정보만 처리
+        // 확정 또는 부분복구 상태 && 중복 시도가 아닌 정보만 처리 (멱등성 보장)
         List<Reservation> reservations = reservationPersistence
                 .findAllByOrderExternalIdAndVariantIdsAndStatuses(
                         orderExternalId,
@@ -257,7 +257,10 @@ public class ReservationService {
                                 Reservation.ReservationStatus.CONFIRMED,
                                 Reservation.ReservationStatus.PARTIAL_RESTORED
                         )
-                );
+                ).stream()
+                .filter(r -> r.getLastIdempotencyKey() == null ||
+                        !r.getLastIdempotencyKey().equals(idempotencyKey)
+                ).toList();
 
         if (reservations.isEmpty())
             return;
@@ -274,15 +277,15 @@ public class ReservationService {
                                 ).sorted(Comparator.comparing(InventoryDto.RequestInfo::variantId))
                                 .toList()
                 ) ||
-                !reservationPersistence.updateRestoredQuantityAndStatusByIds(
-                        true,
+                !reservationPersistence.updateForPartialRestoration(
                         reservations.stream()
                                 .collect(Collectors.toMap(
                                         Reservation::getId,
                                         r -> variantQuantities.get(
                                                 r.getVariantId()
                                         )
-                                ))
+                                )),
+                        idempotencyKey
                 )
         )
             throw new BusinessDetailException(

@@ -66,12 +66,20 @@ public class ReservationPersistenceAdapter implements ReservationPersistencePort
     }
 
     @Override
-    public boolean updateRestoredQuantityAndStatusByIds(boolean isPartially,
-                                                        Map<Long, Integer> reservationQuantities) {
+    public boolean updateForAllRestoration(Map<Long, Integer> reservationQuantities) {
         return Arrays.stream(
-                reservationTemplate.updateRestoredQuantityAndStatusByIds(
-                        isPartially,
+                reservationTemplate.updateForAllRestoration(
                         reservationQuantities
+                )
+        ).allMatch(v -> v > 0);
+    }
+
+    @Override
+    public boolean updateForPartialRestoration(Map<Long, Integer> reservationQuantities,
+                                               String idempotencyKey) {
+        return Arrays.stream(
+                reservationTemplate.updateForPartialRestoration(
+                        reservationQuantities, idempotencyKey
                 )
         ).allMatch(v -> v > 0);
     }

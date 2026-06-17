@@ -51,33 +51,37 @@ public class ReservationJdbcTemplate {
         );
     }
 
-    public int[] updateRestoredQuantityAndStatusByIds(boolean isPartially,
-                                                      Map<Long, Integer> reservationQuantities) {
-        return isPartially ?
-                jdbcTemplate.batchUpdate(
+    public int[] updateForAllRestoration(Map<Long, Integer> reservationQuantities) {
+        return jdbcTemplate.batchUpdate(
                 "UPDATE reservations SET " +
                         "restored_quantity = restored_quantity + :quantity, " +
-                        "status = 'PARTIAL_RESTORED' " +
-                    "WHERE id = :id AND " +
+                        "status = 'RESTORED' " +
+                        "WHERE id = :id AND " +
+                        "status = 'CONFIRMED'",
+                reservationQuantities.entrySet().stream()
+                        .map(entry -> new MapSqlParameterSource()
+                                .addValue("id", entry.getKey())
+                                .addValue("quantity", entry.getValue())
+                        ).toArray(SqlParameterSource[]::new)
+        );
+    }
+
+    public int[] updateForPartialRestoration(Map<Long, Integer> reservationQuantities,
+                                             String idempotencyKey) {
+        return jdbcTemplate.batchUpdate(
+                "UPDATE reservations SET " +
+                        "status = 'PARTIAL_RESTORED', " +
+                        "restored_quantity = restored_quantity + :quantity, " +
+                        "last_idempotency_key = :idempotencyKey " +
+                        "WHERE id = :id AND " +
                         "(status = 'CONFIRMED' OR status = 'PARTIAL_RESTORED') AND " +
                         "quantity >= restored_quantity + :quantity",
                 reservationQuantities.entrySet().stream()
                         .map(entry -> new MapSqlParameterSource()
                                 .addValue("id", entry.getKey())
                                 .addValue("quantity", entry.getValue())
+                                .addValue("idempotencyKey", idempotencyKey)
                         ).toArray(SqlParameterSource[]::new)
-                ) :
-                jdbcTemplate.batchUpdate(
-                        "UPDATE reservations SET " +
-                                "restored_quantity = restored_quantity + :quantity, " +
-                                "status = 'RESTORED' " +
-                            "WHERE id = :id AND " +
-                                "status = 'CONFIRMED'",
-                        reservationQuantities.entrySet().stream()
-                                .map(entry -> new MapSqlParameterSource()
-                                        .addValue("id", entry.getKey())
-                                        .addValue("quantity", entry.getValue())
-                                ).toArray(SqlParameterSource[]::new)
-                );
+        );
     }
 }

@@ -23,6 +23,8 @@ public interface ReservationPersistencePort {
                               Reservation.ReservationStatus status,
                               Reservation.ReservationStatus beforeStatus);
 
-    boolean updateRestoredQuantityAndStatusByIds(boolean isPartially,
-                                                 Map<Long, Integer> reservationQuantities);
+    boolean updateForAllRestoration(Map<Long, Integer> reservationQuantities);
+
+    boolean updateForPartialRestoration(Map<Long, Integer> reservationQuantities,
+                                        String idempotencyKey);
 }
