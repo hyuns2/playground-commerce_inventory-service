@@ -1,8 +1,8 @@
 tuning:
   scheduler:
-    pool-size: 2
+    pool-size: 1
   inbox-worker:
-    scheduling-interval: 15000
-    pool-size: 4
-    limit-size: 100
+    scheduling-interval: ${INBOX_WORKER_SCHEDULING_INTERVAL}
+    pool-size: ${INBOX_WORKER_POOL_SIZE}
+    limit-size: ${INBOX_WORKER_LIMIT_SIZE}
     retry-max: 3
