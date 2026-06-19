@@ -25,7 +25,7 @@ public class InboxPersistenceAdapter {
         return jdbcTemplate.update(
                 "UPDATE inboxes SET " +
                         "processed = :processed " +
-                        "WHERE id = :id",
+                    "WHERE id = :id",
                 Map.of(
                         "id", id,
                         "processed", processed
@@ -35,10 +35,10 @@ public class InboxPersistenceAdapter {
 
     public boolean updateRetryCountAndLockedUntil(Long id, Instant lockedUntil) {
         return jdbcTemplate.update(
-                "UPDATE inboxes " +
-                        "SET retry_count = retry_count + 1, " +
-                        "AND locked_until = :lockedUntil " +
-                        "WHERE id = :id",
+                "UPDATE inboxes SET " +
+                        "retry_count = retry_count + 1, AND " +
+                        "locked_until = :lockedUntil " +
+                    "WHERE id = :id",
                 Map.of(
                         "id", id,
                         "locked_until", lockedUntil

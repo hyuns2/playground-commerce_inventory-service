@@ -13,10 +13,13 @@ import java.time.Instant;
 @AllArgsConstructor
 @Builder
 @Table(
-        name = "inboxes"
-//        indexes = {
-//                @Index(name = "idx_processed", columnList = "processed")
-//        }
+        name = "inboxes",
+        indexes = {
+                @Index(
+                        name = "idx_retryCount_lockedUntil_occurredAt",
+                        columnList = "retryCount, lockedUntil, occurredAt"
+                )
+        }
 )
 public class InboxEntity {
     @Id

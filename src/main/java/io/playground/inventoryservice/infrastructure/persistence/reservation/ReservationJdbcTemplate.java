@@ -56,7 +56,7 @@ public class ReservationJdbcTemplate {
                 "UPDATE reservations SET " +
                         "restored_quantity = restored_quantity + :quantity, " +
                         "status = 'RESTORED' " +
-                        "WHERE id = :id AND " +
+                    "WHERE id = :id AND " +
                         "status = 'CONFIRMED'",
                 reservationQuantities.entrySet().stream()
                         .map(entry -> new MapSqlParameterSource()
@@ -73,7 +73,7 @@ public class ReservationJdbcTemplate {
                         "status = 'PARTIAL_RESTORED', " +
                         "restored_quantity = restored_quantity + :quantity, " +
                         "last_idempotency_key = :idempotencyKey " +
-                        "WHERE id = :id AND " +
+                    "WHERE id = :id AND " +
                         "(status = 'CONFIRMED' OR status = 'PARTIAL_RESTORED') AND " +
                         "quantity >= restored_quantity + :quantity",
                 reservationQuantities.entrySet().stream()
