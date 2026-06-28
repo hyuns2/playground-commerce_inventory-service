@@ -1,4 +1,4 @@
-package io.playground.inventoryservice.infrastructure.worker;
+package io.playground.inventoryservice.infrastructure.worker.inbox;
 
 import io.playground.inventoryservice.infrastructure.kafka.consumer.InboxHandler;
 import io.playground.inventoryservice.infrastructure.persistence.eventstream.InboxEntity;

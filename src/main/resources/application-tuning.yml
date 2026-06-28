@@ -1,8 +1,13 @@
 tuning:
   scheduler:
-    pool-size: 1
+    pool-size: 2
   inbox-worker:
     scheduling-interval: ${INBOX_WORKER_SCHEDULING_INTERVAL}
     pool-size: ${INBOX_WORKER_POOL_SIZE}
     limit-size: ${INBOX_WORKER_LIMIT_SIZE}
     retry-max: 3
+  hot-inventory-worker:
+    cache-name: hot-inventory
+    scheduling-interval: ${HOT_INVENTORY_WORKER_SCHEDULING_INTERVAL}
+    target-ids: ${HOT_INVENTORY_WORKER_TARGET_IDS}
+    factor: ${HOT_INVENTORY_WORKER_FACTOR}

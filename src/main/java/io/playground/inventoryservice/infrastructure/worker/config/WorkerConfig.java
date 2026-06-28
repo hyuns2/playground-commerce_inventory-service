@@ -1,5 +1,6 @@
-package io.playground.inventoryservice.infrastructure.worker;
+package io.playground.inventoryservice.infrastructure.worker.config;
 
+import io.playground.inventoryservice.infrastructure.worker.inbox.InboxWorkerProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

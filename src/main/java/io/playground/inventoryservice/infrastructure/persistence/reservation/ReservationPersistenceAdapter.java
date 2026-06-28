@@ -2,6 +2,7 @@ package io.playground.inventoryservice.infrastructure.persistence.reservation;
 
 import io.playground.inventoryservice.application.port.ReservationPersistencePort;
 import io.playground.inventoryservice.domain.Reservation;
+import io.playground.inventoryservice.infrastructure.persistence.stock.StockJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 public class ReservationPersistenceAdapter implements ReservationPersistencePort {
     private final ReservationJpaRepository reservationRepository;
     private final ReservationJdbcTemplate reservationTemplate;
+    private final StockJpaRepository stockRepository;
 
     @Override
     public boolean existsByOrderExternalId(String orderExternalId) {
@@ -43,6 +45,16 @@ public class ReservationPersistenceAdapter implements ReservationPersistencePort
                 ).stream()
                 .map(ReservationEntity::toDomain)
                 .toList();
+    }
+
+    @Override
+    public void save(Reservation reservation) {
+        reservationRepository.save(
+                ReservationEntity.fromDomain(
+                        reservation,
+                        stockRepository.getReferenceById(reservation.getStockId())
+                )
+        );
     }
 
     @Override

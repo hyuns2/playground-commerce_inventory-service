@@ -14,6 +14,18 @@ import java.util.List;
 public class StockJdbcTemplate {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
+    public int updateQuantityForReserve(InventoryDto.RequestInfo requestInfo) {
+        return jdbcTemplate.update(
+                "UPDATE stocks SET " +
+                        "reserved_quantity = reserved_quantity + :quantity " +
+                        "WHERE variant_id = :variantId AND " +
+                        "(total_quantity - reserved_quantity) >= :quantity",
+                new MapSqlParameterSource()
+                        .addValue("variantId", requestInfo.variantId())
+                        .addValue("quantity", requestInfo.quantity())
+        );
+    }
+
     public int[] updateQuantitiesForReserve(List<InventoryDto.RequestInfo> requestInfos) {
         return jdbcTemplate.batchUpdate(
                 "UPDATE stocks SET " +

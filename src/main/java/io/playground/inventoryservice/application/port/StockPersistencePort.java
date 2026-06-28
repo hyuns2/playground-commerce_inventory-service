@@ -13,6 +13,8 @@ public interface StockPersistencePort {
 
     List<Stock> findAllByVariantIds(List<Long> variantIds);
 
+    boolean updateQuantityForReserve(InventoryDto.RequestInfo requestInfo);
+
     int[] updateQuantitiesForReserve(List<InventoryDto.RequestInfo> requestInfos);
 
     boolean updateQuantitiesForConfirm(List<InventoryDto.RequestInfo> requestInfos);

@@ -1,4 +1,4 @@
-package io.playground.inventoryservice.infrastructure.worker;
+package io.playground.inventoryservice.infrastructure.worker.inbox;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -40,6 +40,13 @@ public class StockPersistenceAdapter implements StockPersistencePort {
     }
 
     @Override
+    public boolean updateQuantityForReserve(InventoryDto.RequestInfo requestInfo) {
+        return stockTemplate.updateQuantityForReserve(
+                requestInfo
+        ) > 0;
+    }
+
+    @Override
     public int[] updateQuantitiesForReserve(List<InventoryDto.RequestInfo> requestInfos) {
         return stockTemplate.updateQuantitiesForReserve(
                 requestInfos

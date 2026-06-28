@@ -17,6 +17,8 @@ public interface ReservationPersistencePort {
             List<Reservation.ReservationStatus> statuses
     );
 
+    void save(Reservation reservation);
+
     List<Integer> saveAll(List<Reservation> reservations);
 
     boolean updateStatusByIds(List<Long> ids,

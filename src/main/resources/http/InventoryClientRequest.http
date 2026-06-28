@@ -22,7 +22,7 @@ POST http://localhost:8082/client/confirm?orderExternalId=order-123
 Content-Type: application/json
 
 ### 재고 예약해제 API
-POST http://localhost:8082/client/release?orderExternalId=order-123
+POST http://localhost:8080/client/release?orderExternalId=order-123
 Content-Type: application/json
 
 ### 재고 복구 API
