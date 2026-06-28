@@ -1,0 +1,100 @@
+package io.playground.inventoryservice.inventory;
+
+import io.playground.inventoryservice.application.dto.InventoryDto;
+import io.playground.inventoryservice.application.usecase.HotReservationService;
+import io.playground.inventoryservice.common.BaseIntegrationTest;
+import io.playground.inventoryservice.common.ConcurrencyTestUtil;
+import io.playground.inventoryservice.exception.BusinessDetailException;
+import io.playground.inventoryservice.infrastructure.persistence.stock.StockEntity;
+import io.playground.inventoryservice.infrastructure.persistence.stock.StockJpaRepository;
+import io.playground.inventoryservice.infrastructure.redis.RedisCacheConfig;
+import io.playground.inventoryservice.infrastructure.redis.RedisConfig;
+import io.playground.inventoryservice.infrastructure.redis.RedisScriptConfig;
+import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+
+import java.util.List;
+import java.util.UUID;
+
+@Slf4j
+@Import({
+        RedisConfig.class,
+        RedisScriptConfig.class,
+        RedisCacheConfig.class
+})
+public class HotReservationConcurrencyTest extends BaseIntegrationTest {
+    @Autowired
+    HotReservationService hotReservationService;
+    @Autowired
+    StockJpaRepository stockRepository;
+
+    @Test
+    @DisplayName("재고 예약 동시성 테스트 -> 재고 10개, 동시 접근 100명")
+    void test_reserve() throws InterruptedException {
+        // given
+        StockEntity stock = stockRepository.save(
+                StockEntity.builder()
+                        .variantId(1L)
+                        .productId(1L)
+                        .totalQuantity(10)
+                        .reservedQuantity(0)
+                        .build()
+        );
+
+        hotReservationService.recacheStocks(List.of(1L));
+
+        // when
+        ConcurrencyTestUtil.ConcurrencyResult result =
+                ConcurrencyTestUtil.runConcurrently(
+                        () -> hotReservationService.reserveStocks(
+                                UUID.randomUUID().toString(),
+                                List.of(
+                                        InventoryDto.RequestInfo.builder()
+                                                .variantId(stock.getVariantId())
+                                                .quantity(1)
+                                                .build()
+                                )
+                        ),
+                        100
+        );
+
+        // then
+        StockEntity finalStock = stockRepository.findById(stock.getId())
+                .orElseThrow();
+
+        log.warn("최종 재고 상태: total={}, reserved={}, available={}",
+                finalStock.getTotalQuantity(),
+                finalStock.getReservedQuantity(),
+                finalStock.getTotalQuantity() - finalStock.getReservedQuantity()
+        );
+
+        Assertions.assertThat(
+                finalStock.getTotalQuantity() == 10).isTrue();
+        Assertions.assertThat(
+                finalStock.getReservedQuantity() == 10).isTrue();
+
+        Assertions.assertThat(
+                result.successCount()).isEqualTo(10);
+        Assertions.assertThat(
+                result.failureCount()).isEqualTo(90);
+
+        List<BusinessDetailException> bizExs =
+                result.errors().stream()
+                        .map(e -> (BusinessDetailException) e)
+                        .toList();
+        Assertions.assertThat(
+                bizExs.stream().filter(
+                        e -> e.getDetail().equals("OUT_OF_STOCK_CACHE")
+                ).toList()
+        ).hasSize(85);
+        Assertions.assertThat(
+                bizExs.stream().filter(
+                        e -> e.getDetail().equals("OUT_OF_STOCK_DB")
+                ).toList()
+        ).hasSize(5);
+    }
+}
