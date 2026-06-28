@@ -18,8 +18,7 @@ import lombok.NoArgsConstructor;
         uniqueConstraints = @UniqueConstraint(
                 name = "uk_orderExternalId_variantId",
                 columnNames = {"orderExternalId", "variantId"}
-        ),
-        indexes = @Index(name = "idx_status", columnList = "status")
+        )
 )
 public class ReservationEntity {
     @Id

@@ -16,8 +16,8 @@ import java.time.Instant;
         name = "inboxes",
         indexes = {
                 @Index(
-                        name = "idx_retryCount_lockedUntil_occurredAt",
-                        columnList = "retryCount, lockedUntil, occurredAt"
+                        name = "idx_processed_occurredAt",
+                        columnList = "processed, occurredAt"
                 )
         }
 )
