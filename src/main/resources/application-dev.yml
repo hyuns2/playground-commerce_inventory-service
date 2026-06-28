@@ -44,25 +44,12 @@ spring:
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      retries: 3
-      batch-size: 16384                  # 16KB
-      buffer-memory: 33554432            # 32MB
-      compression-type: snappy
-      properties:
-        enable.idempotence: true
-        max.in.flight.requests.per.connection: 5
-        linger.ms: 10
-        delivery.timeout.ms: 120000
-        request.timeout.ms: 30000
     consumer:
       group-id: inventory-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       enable-auto-commit: false
-      auto-offset-reset: earliest
+      auto-offset-reset: latest
       max-poll-records: 500
       properties:
         isolation.level: read_committed
@@ -72,7 +59,7 @@ spring:
         heartbeat.interval.ms: 3000
     listener:
       ack-mode: manual
-      concurrency: 1
+      concurrency: 3
       type: single
       poll-timeout: 3000
       auto-startup: true
