@@ -1,6 +1,7 @@
 package io.playground.inventoryservice.presentation;
 
 import io.playground.inventoryservice.application.dto.InventoryDto;
+import io.playground.inventoryservice.application.usecase.HotReservationService;
 import io.playground.inventoryservice.application.usecase.ReservationService;
 import io.playground.inventoryservice.application.usecase.StockService;
 import io.playground.inventoryservice.domain.Stock;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class InventoryClientController {
     private final StockService stockService;
     private final ReservationService reservationService;
+    private final HotReservationService hotReservationService;
 
     @GetMapping("/stocks-info")
     public ResponseEntity<Map<Long, Integer>> getStocksInfo(@RequestParam Long productId) {
@@ -38,6 +40,17 @@ public class InventoryClientController {
     public ResponseEntity<Void> reserveStocks(@RequestParam String orderExternalId,
                                               @Valid @NotNull @RequestBody List<InventoryDto.RequestInfo> requestInfos) {
         reservationService.reserveStocks(
+                orderExternalId,
+                requestInfos
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/hot/reserve")
+    public ResponseEntity<Void> reserveHotStock(@RequestParam String orderExternalId,
+                                                @Valid @NotNull @RequestBody List<InventoryDto.RequestInfo> requestInfos) {
+        hotReservationService.reserveStocks(
                 orderExternalId,
                 requestInfos
         );

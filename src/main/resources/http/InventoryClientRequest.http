@@ -17,6 +17,17 @@ Content-Type: application/json
   }
 ]
 
+### 핫딜 재고 예약 API
+POST http://localhost:8080/client/hot/reserve?orderExternalId=order-123
+Content-Type: application/json
+
+[
+  {
+    "variantId": 1,
+    "quantity": 50
+  }
+]
+
 ### 재고 확정 API
 POST http://localhost:8082/client/confirm?orderExternalId=order-123
 Content-Type: application/json
