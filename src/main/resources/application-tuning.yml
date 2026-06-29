@@ -9,5 +9,5 @@ tuning:
   hot-inventory-worker:
     cache-name: hot-inventory
     scheduling-interval: ${HOT_INVENTORY_WORKER_SCHEDULING_INTERVAL}
-    target-ids: ${HOT_INVENTORY_WORKER_TARGET_IDS}
+    target-ids: ${HOT_INVENTORY_TARGET_IDS}
     factor: ${HOT_INVENTORY_WORKER_FACTOR}

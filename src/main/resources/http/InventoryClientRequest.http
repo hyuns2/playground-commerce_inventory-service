@@ -3,7 +3,7 @@ GET http://localhost:8082/inventory/client/stock-infos?productId=1
 Content-Type: application/json
 
 ### 재고 예약 API
-POST http://localhost:8082/client/reserve?orderExternalId=order-123
+POST http://localhost:8080/client/reserve?orderExternalId=order-234
 Content-Type: application/json
 
 [
@@ -18,7 +18,7 @@ Content-Type: application/json
 ]
 
 ### 핫딜 재고 예약 API
-POST http://localhost:8080/client/hot/reserve?orderExternalId=order-123
+POST http://3.37.56.47:8080/client/hot/reserve?orderExternalId=order-123
 Content-Type: application/json
 
 [

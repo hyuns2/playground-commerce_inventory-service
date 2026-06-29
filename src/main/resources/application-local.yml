@@ -25,13 +25,6 @@ spring:
     defer-datasource-initialization: true
     open-in-view: false
 
-  batch:
-    jdbc:
-      initialize-schema: ${BATCH_JDBC_INITIALIZE_SCHEMA}
-      platform: mysql
-    job:
-      enabled: true
-
   sql:
     init:
       mode: ${SQL_INIT_MODE}

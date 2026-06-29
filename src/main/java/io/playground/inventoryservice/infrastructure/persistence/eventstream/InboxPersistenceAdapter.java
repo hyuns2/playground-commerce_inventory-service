@@ -36,7 +36,7 @@ public class InboxPersistenceAdapter {
     public boolean updateRetryCountAndLockedUntil(Long id, Instant lockedUntil) {
         return jdbcTemplate.update(
                 "UPDATE inboxes SET " +
-                        "retry_count = retry_count + 1, AND " +
+                        "retry_count = retry_count + 1, " +
                         "locked_until = :lockedUntil " +
                     "WHERE id = :id",
                 Map.of(
